@@ -65,11 +65,11 @@ class AuthenticationsHandler {
 
       const accessToken = this._tokenManager.generateAccessToken({ id });
       return {
-          status: 'success',
-          message: 'Access Token berhasil diperbarui',
-          data: {
+        status: 'success',
+        message: 'Access Token berhasil diperbarui',
+        data: {
           accessToken,
-      },
+        },
       };
     } catch (error) {
       if (error instanceof ClientError) {
