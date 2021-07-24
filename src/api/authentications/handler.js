@@ -14,26 +14,26 @@ class AuthenticationsHandler {
 
   async postAuthenticationHandler(request, h) {
     try {
-        this._validator.validatePostAuthenticationPayload(request.payload);
+      this._validator.validatePostAuthenticationPayload(request.payload);
 
-        const { username, password } = request.payload;
-        const id = await this._usersService.verifyUserCredential(username, password);
- 
-        const accessToken = this._tokenManager.generateAccessToken({ id });
-        const refreshToken = this._tokenManager.generateRefreshToken({ id });
+      const { username, password } = request.payload;
+      const id = await this._usersService.verifyUserCredential(username, password);
 
-        await this._authenticationsService.addRefreshToken(refreshToken);
+      const accessToken = this._tokenManager.generateAccessToken({ id });
+      const refreshToken = this._tokenManager.generateRefreshToken({ id });
 
-        const response = h.response({
-            status: 'success',
-            message: 'Authentication berhasil ditambahkan',
-            data: {
-              accessToken,
-              refreshToken,
-            },
-          });
-          response.code(201);
-          return response;
+      await this._authenticationsService.addRefreshToken(refreshToken);
+
+      const response = h.response({
+        status: 'success',
+        message: 'Authentication berhasil ditambahkan',
+        data: {
+          accessToken,
+          refreshToken,
+        },
+      });
+      response.code(201);
+      return response;
     } catch (error) {
       if (error instanceof ClientError) {
         const response = h.response({
@@ -57,23 +57,23 @@ class AuthenticationsHandler {
 
   async putAuthenticationHandler(request, h) {
     try {
-        this._validator.validatePutAuthenticationPayload(request.payload);
+      this._validator.validatePutAuthenticationPayload(request.payload);
 
-        const { refreshToken } = request.payload;
-        await this._authenticationsService.verifyRefreshToken(refreshToken);
-        const { id } = this._tokenManager.verifyRefreshToken(refreshToken);
+      const { refreshToken } = request.payload;
+      await this._authenticationsService.verifyRefreshToken(refreshToken);
+      const { id } = this._tokenManager.verifyRefreshToken(refreshToken);
 
-        const accessToken = this._tokenManager.generateAccessToken({ id });
-        return {
-            status: 'success',
-            message: 'Access Token berhasil diperbarui',
-            data: {
-            accessToken,
-        },
+      const accessToken = this._tokenManager.generateAccessToken({ id });
+      return {
+          status: 'success',
+          message: 'Access Token berhasil diperbarui',
+          data: {
+          accessToken,
+      },
       };
     } catch (error) {
       if (error instanceof ClientError) {
-        const response = h.response({
+      const response = h.response({
           status: 'fail',
           message: error.message,
         });
